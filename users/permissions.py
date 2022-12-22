@@ -2,9 +2,15 @@ from rest_framework import permissions
 
 
 class IsOwnerPermission(permissions.BasePermission):
-    """check if owner """
+    """
+    Check if the request user is the owner of the object.
+    """
 
     def has_object_permission(self, request, view, obj):
+        """
+        Check if the request user is the owner of the object.
+        SAFE_METHODS are methods that are considered safe, such as GET, HEAD, and OPTIONS.
+        """
         if request.method == permissions.SAFE_METHODS:
             return True
 
@@ -17,6 +23,9 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
+        """
+        Check if the request user is an admin or the request is a read-only request.
+        SAFE_METHODS are methods that are considered safe, such as GET, HEAD, and OPTIONS.
+        """
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff

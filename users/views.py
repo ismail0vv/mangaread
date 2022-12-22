@@ -1,33 +1,39 @@
-from rest_framework.views import APIView
 from django.contrib.auth import authenticate
+from rest_framework import generics, status, viewsets, mixins, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import SignUpSerializer, CustomUserSerializer, UserProfileSerializer, ChangePasswordSerializer
-from rest_framework import generics, status, viewsets, mixins
-from rest_framework.response import Response
-from rest_framework import permissions
 from .utils import create_jwt_pair_for_user
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from .permissions import IsOwnerPermission
-from django.shortcuts import get_object_or_404
-from MangaRead.settings.settings import AUTH_USER_MODEL
+from .serializers import SignUpSerializer, CustomUserSerializer, UserProfileSerializer, ChangePasswordSerializer
 
 
-class SignUpAPIView(mixins.CreateModelMixin,
-                    generics.GenericAPIView):
+class SignUpAPIView(mixins.CreateModelMixin, generics.GenericAPIView):
+    """
+    View for handling user signup.
+    """
     serializer_class = SignUpSerializer
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
+        """
+        Handle POST request to create a new user.
+        """
         self.create(request)
         return Response({"message": "registered successfully"}, status=status.HTTP_201_CREATED)
 
 
 class LoginAPIView(generics.GenericAPIView):
+    """
+    View for handling user login.
+    """
     permission_classes = (permissions.AllowAny,)
     serializer_class = CustomUserSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Handle POST request to login a user.
+        """
         email = request.data.get('email')
         password = request.data.get('password')
 
@@ -44,6 +50,9 @@ class LoginAPIView(generics.GenericAPIView):
         return Response(data={"message": "Wrong email or password!"})
 
     def get(self, request):
+        """
+        Handle GET request to retrieve current user and auth data.
+        """
         context = {
             "user": str(request.user),
             "auth": str(request.auth)
@@ -51,35 +60,50 @@ class LoginAPIView(generics.GenericAPIView):
         return Response(data=context, status=status.HTTP_200_OK)
 
 
-class UserProfileViewSet(mixins.RetrieveModelMixin,
-                         mixins.UpdateModelMixin,
-                         viewsets.GenericViewSet):
+class UserProfileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """
+    ViewSet for handling user profile operations.
+    """
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
+        """
+        Return the current user as the object to be retrieved or updated.
+        """
         user = self.request.user
         return user
 
 
-class ChangePasswordViewSet(mixins.UpdateModelMixin,
-                            viewsets.GenericViewSet):
+class ChangePasswordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """
+    ViewSet for handling password change operations.
+    """
     serializer_class = ChangePasswordSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
+        """
+        Return the current user as the object to be updated.
+        """
         user = self.request.user
         return user
 
 
 class LogoutAPIView(APIView):
+    """
+    View for handling user logout.
+    """
     permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request):
+        """
+        Handle POST request to logout a user by blacklisting the refresh token.
+        """
         try:
             refresh_token = request.data.get("refresh_token")
             token = RefreshToken(refresh_token)
             token.blacklist()
-
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)

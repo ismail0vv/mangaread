@@ -16,9 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .yasg import urlpatterns as swagger
 from django.conf.urls.static import static
 from MangaRead.settings import settings
+from MangaRead.yasg import urlpatterns as swagger
 
 urlpatterns = [
     path('admin/', admin.site.urls),
