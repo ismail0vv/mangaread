@@ -3,8 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-
-from .utils import get_photo_url
+from users.utils import get_photo_url
 
 User = get_user_model()
 

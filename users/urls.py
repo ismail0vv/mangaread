@@ -1,6 +1,5 @@
 from django.urls import path, include
-from .views import LoginAPIView, SignUpAPIView, UserProfileViewSet, ChangePasswordViewSet, LogoutAPIView
-from rest_framework.routers import DefaultRouter
+from users.views import LoginAPIView, SignUpAPIView, UserProfileViewSet, ChangePasswordViewSet, LogoutAPIView
 
 urlpatterns = [
     path("accounts/", include("djoser.urls.jwt")),

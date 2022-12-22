@@ -2,9 +2,7 @@ from rest_framework import permissions
 
 
 class IsOwnerPermission(permissions.BasePermission):
-    """
-    Check if the request user is the owner of the object.
-    """
+    """Check if the request user is the owner of the object."""
 
     def has_object_permission(self, request, view, obj):
         """
@@ -18,9 +16,7 @@ class IsOwnerPermission(permissions.BasePermission):
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    """
-    The request is user an admin, or is a read-only request.
-    """
+    """The request is user an admin, or is a read-only request."""
 
     def has_permission(self, request, view):
         """

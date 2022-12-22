@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils.text import slugify
-from MangaRead.settings.settings import AUTH_USER_MODEL
+from django.contrib.auth import get_user_model
 
-# Create your models here.
+User = get_user_model()
+
+
 class Genre(models.Model):
-    """
-    Model representing a genre of manga.
-    """
+    """Model representing a genre of manga."""
     name = models.CharField('Genre', max_length=255)
 
     def __str__(self):
@@ -14,9 +14,7 @@ class Genre(models.Model):
 
 
 class Type(models.Model):
-    """
-    Model representing the type of manga.
-    """
+    """Model representing the type of manga."""
     name = models.CharField('Type', max_length=255)
 
     def __str__(self):
@@ -24,9 +22,7 @@ class Type(models.Model):
 
 
 class Manga(models.Model):
-    """
-    Model representing a manga.
-    """
+    """Model representing a manga."""
     title = models.CharField('Title', max_length=255)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     type = models.ForeignKey(Type, on_delete=models.CASCADE, related_name='mangas')
@@ -35,9 +31,7 @@ class Manga(models.Model):
     description = models.TextField()
 
     def save(self, *args, **kwargs):
-        """
-        Generate the slug field before saving the model.
-        """
+        """Generate the slug field before saving the model."""
         self.slug = slugify(self.title)
         super(Manga, self).save(*args, **kwargs)
 
@@ -46,9 +40,7 @@ class Manga(models.Model):
 
 
 class Review(models.Model):
-    """
-    Model representing a review of a manga.
-    """
-    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
+    """Model representing a review of a manga."""
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
     manga = models.ForeignKey(Manga, on_delete=models.CASCADE, related_name='reviews')

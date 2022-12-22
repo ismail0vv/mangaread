@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
-from .views import *
+from manga.views import TypeViewSet, GenreViewSet, MangaViewSet, ReviewOnMangaApiView, ReviewAPIView
 
 router = SimpleRouter()
 router.register('type', TypeViewSet)

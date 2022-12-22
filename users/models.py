@@ -1,9 +1,8 @@
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
-
-from .managers import CustomUserManager
-from .utils import user_avatar_path
+from users.managers import CustomUserManager
+from users.utils import user_avatar_path
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -25,7 +24,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['nickname', 'avatar']
 
     def __str__(self):
-        """
-        Return a string representation of the user.
-        """
+        """Return a string representation of the user."""
         return self.email
