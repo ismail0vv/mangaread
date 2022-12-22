@@ -7,7 +7,7 @@ MangoRead is project with manga catalog with types and genres,you also can add r
 ## Installation
 ```
 git clone https://gitlab.com/ismail0vv/mangoread_backend.git
-cd manga_read_backend
+cd mangoread_backend
 pip install -r requirements.txt
 ```
 ## Usage
@@ -25,4 +25,4 @@ If you want to contribute just make pull requests
 Main developer [ismail0vv](https://gitlab.com/ismail0vv)
 
 ## Project status
- 70% done
+#### done
