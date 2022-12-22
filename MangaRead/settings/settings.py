@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'drf_yasg',
-    'django_filters',
 
     'users',
     'manga',
