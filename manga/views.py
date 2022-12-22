@@ -35,6 +35,7 @@ class MangaViewSet(viewsets.ModelViewSet):
 
 
 class ReviewOnMangaApiView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         slug = self.kwargs['slug']
@@ -42,5 +43,23 @@ class ReviewOnMangaApiView(generics.ListCreateAPIView):
             queryset = Review.objects.filter(manga__slug__exact=slug)
             return queryset
         except:
-            return None
+            raise Manga.DoesNotExist
 
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return ReviewSerializer
+        return ReviewCreateSerializer
+
+    def perform_create(self, serializer):
+        serializer.validated_data['manga'] = Manga.objects.get(slug=self.kwargs['slug'])
+        serializer.save()
+
+
+class ReviewAPIView(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    viewsets.GenericViewSet):
+    serializer_class = ReviewSerializer
+    permission_classes = (IsOwnerPermission,)
+    lookup_field = 'id'
+    queryset = Review.objects.all()

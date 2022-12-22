@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Type, Genre, Manga, Review
 from users.serializers import CustomUserSerializer
 from MangaRead.settings.settings import AUTH_USER_MODEL
+from rest_framework.request import Request
 
 
 class TypeSerializer(serializers.ModelSerializer):
@@ -17,19 +18,21 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = CustomUserSerializer()
+    author = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = Review
-        fields = 'id author text'.split()
+        fields = 'id author text manga'.split()
+        read_only_fields = "manga id author".split()
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
-    author = serializers.CurrentUserDefault()
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Review
-        fields = 'author text'.split()
+        fields = 'id author text manga'.split()
+        read_only_fields = "id manga".split()
 
 
 class MangaSerializer(serializers.ModelSerializer):
