@@ -1,8 +1,8 @@
 import os
 from MangaRead.settings.settings import *
-from simple_jwt_settings import SIMPLE_JWT
+from MangaRead.settings.simple_jwt_settings import SIMPLE_JWT
 
-ALLOWED_HOSTS += '*'
+ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 
@@ -11,7 +11,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('BD_PASSWORD'),'HOST': os.environ.get('DB_HOST'),'PORT': os.environ.get('DB_PORT')
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT')
     }
 }
 
