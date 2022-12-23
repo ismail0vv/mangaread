@@ -45,4 +45,4 @@ class MangaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Manga
-        fields = "id title slug type genres release_year description reviews".split()
+        fields = "id title slug image type genres release_year description reviews".split()
