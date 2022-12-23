@@ -8,21 +8,25 @@ from manga.serializers import (
 from users.permissions import IsAdminOrReadOnly, IsOwnerPermission
 
 
-class TypeViewSet(viewsets.ModelViewSet):
+class TypeViewSet(mixins.ListModelMixin,
+                  viewsets.GenericViewSet):
     """ViewSet for viewing and editing Type model instances."""
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     """ViewSet for viewing and editing Genre model instances."""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class MangaViewSet(viewsets.ModelViewSet):
+class MangaViewSet(mixins.ListModelMixin,
+                   mixins.RetrieveModelMixin,
+                   viewsets.GenericViewSet):
     """ViewSet for viewing and editing Manga model instances."""
     pagination_class = PageNumberPagination
     serializer_class = MangaSerializer

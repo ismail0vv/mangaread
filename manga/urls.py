@@ -1,14 +1,12 @@
-from django.urls import path, include
-from rest_framework.routers import SimpleRouter
+from django.urls import path
 from manga.views import TypeViewSet, GenreViewSet, MangaViewSet, ReviewOnMangaApiView, ReviewAPIView
 
-router = SimpleRouter()
-router.register('type', TypeViewSet)
-router.register('genre', GenreViewSet)
-router.register('manga', MangaViewSet, basename='manga')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('type/', TypeViewSet.as_view({"get": "list"})),
+    path('genre/', GenreViewSet.as_view({"get": "list"})),
+    path("manga/", MangaViewSet.as_view({"get": "list"})),
+    path('manga/<slug:slug>/', MangaViewSet.as_view({"get": "retrieve"})),
     path('manga/<slug:slug>/reviews/', ReviewOnMangaApiView.as_view()),
     path("reviews/<int:id>/", ReviewAPIView.as_view({'get': "retrieve",
                                                      "put": "update",
