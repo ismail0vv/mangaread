@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
-from manga.utils import manga_photo_path
+from manga.utils import MangaUtils
 
 User = get_user_model()
 
@@ -25,7 +25,7 @@ class Type(models.Model):
 class Manga(models.Model):
     """Model representing a manga."""
     title = models.CharField('Title', max_length=255)
-    image = models.ImageField(upload_to=manga_photo_path)
+    image = models.ImageField(upload_to=MangaUtils.manga_photo_path)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     type = models.ForeignKey(Type, on_delete=models.CASCADE, related_name='mangas')
     genres = models.ManyToManyField(Genre, related_name='mangas')

@@ -1,13 +1,13 @@
 FROM python:3.10
 
-RUN mkdir /app
+RUN mkdir /mangaread
 
-WORKDIR /app/
+WORKDIR /mangaread/
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . /app
+COPY . /mangaread
 
 CMD ["python", "manage.py runserver"]

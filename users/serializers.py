@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from users.utils import get_photo_url
+from users.utils import UserUtils
 
 User = get_user_model()
 
@@ -31,7 +31,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         """
         Get the avatar URL for a user.
         """
-        return get_photo_url(self, user.avatar)
+        return UserUtils.get_photo_url(self, user.avatar)
 
 
 class UserProfileSerializer(CustomUserSerializer):

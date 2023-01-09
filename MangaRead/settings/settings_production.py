@@ -2,7 +2,7 @@ import os
 from MangaRead.settings.settings import *
 from MangaRead.settings.simple_jwt_settings import SIMPLE_JWT
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0']
 
 DEBUG = False
 

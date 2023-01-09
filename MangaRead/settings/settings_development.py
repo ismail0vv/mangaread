@@ -1,5 +1,5 @@
 from MangaRead.settings.settings import *
-from .simple_jwt_settings import *
+from MangaRead.settings.simple_jwt_settings import *
 DEBUG = True
 
 DATABASES = {

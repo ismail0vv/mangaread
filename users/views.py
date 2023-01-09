@@ -3,7 +3,7 @@ from rest_framework import generics, status, viewsets, mixins, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.utils import create_jwt_pair_for_user
+from users.utils import UserUtils
 from users.serializers import SignUpSerializer, CustomUserSerializer, UserProfileSerializer, ChangePasswordSerializer
 
 
@@ -31,7 +31,7 @@ class LoginAPIView(generics.GenericAPIView):
         user = authenticate(email=email, password=password)
 
         if user is not None:
-            tokens = create_jwt_pair_for_user(user)
+            tokens = UserUtils.create_jwt_pair_for_user(user)
             data = {
                 "message": "Login Successfully",
                 "tokens": tokens
