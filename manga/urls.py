@@ -1,6 +1,6 @@
 from django.urls import path
-from manga.views import TypeViewSet, GenreViewSet, MangaViewSet, ReviewOnMangaApiView, ReviewAPIView
-
+from manga.views import TypeViewSet, GenreViewSet, MangaViewSet, ReviewOnMangaApiView, ReviewAPIView, \
+    GlobalSearchAPIView
 
 urlpatterns = [
     path('type/', TypeViewSet.as_view({"get": "list"})),
@@ -11,5 +11,6 @@ urlpatterns = [
     path("reviews/<int:id>/", ReviewAPIView.as_view({'get': "retrieve",
                                                      "put": "update",
                                                      "patch": "partial_update",
-                                                     "delete": "destroy"}))
+                                                     "delete": "destroy"})),
+    path("search/", GlobalSearchAPIView.as_view())
 ]

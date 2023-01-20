@@ -1,9 +1,12 @@
-from rest_framework import generics, viewsets, permissions, mixins
+from rest_framework.response import Response
+from rest_framework import views, generics, viewsets, permissions, mixins
 from rest_framework.pagination import PageNumberPagination
 from manga.filters import custom_queryset_filter
 from manga.models import Type, Genre, Manga, Review
+from rest_framework import filters
+from manga.services import MangaServices
 from manga.serializers import (
-    TypeSerializer, GenreSerializer, MangaSerializer, ReviewSerializer, ReviewCreateSerializer
+    TypeSerializer, GenreSerializer, MangaSerializer, ReviewSerializer, ReviewCreateSerializer, GlobalSearchSerializer
 )
 from users.permissions import IsAdminOrReadOnly, IsOwnerPermission
 
@@ -14,6 +17,8 @@ class TypeViewSet(mixins.ListModelMixin,
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 
 class GenreViewSet(mixins.ListModelMixin,
@@ -22,6 +27,8 @@ class GenreViewSet(mixins.ListModelMixin,
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 
 class MangaViewSet(mixins.ListModelMixin,
@@ -31,7 +38,9 @@ class MangaViewSet(mixins.ListModelMixin,
     pagination_class = PageNumberPagination
     serializer_class = MangaSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
     lookup_field = 'slug'
+    search_fields = ('title', 'description')
 
     def get_queryset(self):
         """Returns a custom queryset based on the request parameters."""
@@ -72,3 +81,16 @@ class ReviewAPIView(mixins.RetrieveModelMixin,
     permission_classes = (IsOwnerPermission,)
     lookup_field = 'id'
     queryset = Review.objects.all()
+
+
+class GlobalSearchAPIView(views.APIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = GlobalSearchSerializer
+
+    def get_queryset(self):
+        return None
+
+    def post(self, request, *args, **kwargs):
+        search_text = request.data.get('search_text')
+        search_result = MangaServices.global_search_service(search_text)
+        return Response(data=search_result)

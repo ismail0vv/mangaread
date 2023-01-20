@@ -1,3 +1,5 @@
+from abc import ABC
+
 from rest_framework import serializers
 from manga.models import Type, Genre, Manga, Review
 from users.serializers import CustomUserSerializer
@@ -46,3 +48,13 @@ class MangaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manga
         fields = "id title slug image type genres release_year description reviews".split()
+
+
+class MangaShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manga
+        fields = 'id title slug image release_year description'.split()
+
+
+class GlobalSearchSerializer(serializers.Serializer):
+    search_text = serializers.CharField(label='Search Text', max_length=100)
