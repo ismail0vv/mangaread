@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 from datetime import timedelta
+from decouple import config
 from pathlib import Path
 import os
 
@@ -27,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 
     'users',
     'manga',
+    'gauth'
 ]
 
 MIDDLEWARE = [
@@ -150,3 +152,6 @@ EMAIL_PORT = 587
 AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
+GOOGLE_SECRET = config("GOOGLE_SECRET")

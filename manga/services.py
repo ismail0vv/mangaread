@@ -12,4 +12,5 @@ class MangaServices:
         reviews = Review.objects.filter(Q(text__icontains=search_text))
 
         return {"types": TypeSerializer(types, many=True).data, "genres": GenreSerializer(genres, many=True).data,
-                "mangas": MangaShortSerializer(mangas, many=True).data, "reviews": ReviewSerializer(reviews, many=True).data}
+                "mangas": MangaShortSerializer(mangas, many=True).data,
+                "reviews": ReviewSerializer(reviews, many=True).data}

@@ -23,7 +23,8 @@ from MangaRead.yasg import urlpatterns as swagger
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(('users.urls', 'users'), namespace='accounts')),
-    path('api/v1/catalog/', include('manga.urls'))
+    path('api/v1/catalog/', include('manga.urls')),
+    path('api/v1/auth/', include('gauth.urls'))
 ]
 
 urlpatterns += swagger
