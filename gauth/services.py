@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import base64
 from email.message import EmailMessage
-from MangaRead.settings import settings
+from MangaRead.settings import base
 
 SCOPES = ['openid', 'https://www.googleapis.com/auth/userinfo.profile',
           'https://www.googleapis.com/auth/userinfo.email']
@@ -19,8 +19,8 @@ def get_google_userinfo():
     flow = InstalledAppFlow.from_client_config({"web": 
         {"auth_uri": "https://accounts.google.com/o/oauth2/auth",
          "token_uri":"https://oauth2.googleapis.com/token",
-         "client_id": settings.GOOGLE_CLIENT_ID,
-         "client_secret": settings.GOOGLE_SECRET}}, scopes=SCOPES)
+         "client_id": base.GOOGLE_CLIENT_ID,
+         "client_secret": base.GOOGLE_SECRET}}, scopes=SCOPES)
     creds = flow.run_local_server(port=0, redirect_uri_trailing_slash=False)
     print(creds)
     try:

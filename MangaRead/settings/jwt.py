@@ -1,5 +1,5 @@
 from datetime import timedelta
-from MangaRead.settings.settings import SECRET_KEY
+from MangaRead.settings.base import SECRET_KEY
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),

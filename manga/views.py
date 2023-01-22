@@ -37,7 +37,7 @@ class MangaViewSet(mixins.ListModelMixin,
     """ViewSet for viewing and editing Manga model instances."""
     pagination_class = PageNumberPagination
     serializer_class = MangaSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     lookup_field = 'slug'
     search_fields = ('title', 'description')

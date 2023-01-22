@@ -9,6 +9,8 @@ from users.utils import UserUtils
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
+import requests
+from django.core.files import File
 User = get_user_model()
 
 # Create your views here.
@@ -22,6 +24,15 @@ def google_auth(request):
     user, _ = User.objects.get_or_create(email=profile['email'], nickname=profile['name'])
     user.email = profile['email']
     user.nickname = profile['name']
+    r = requests.get(profile['picture'])
+    with open(f'/tmp/avatar.png', "wb") as f:
+        f.write(r.content)
+    reopen = open(f'/tmp/avatar.png', 'rb')
+    django_file = File(reopen)
+    
+    print(profile['picture'])
+    user.avatar.save("avatar.png", django_file, save=True)
+    reopen.close()
     user.save()
     
     

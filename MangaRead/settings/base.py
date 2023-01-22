@@ -30,6 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 ALLOWED_HOSTS = ['*']
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,10 +49,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
-
+    
     'users',
     'manga',
-    'gauth'
+    'gauth',
 ]
 
 MIDDLEWARE = [
