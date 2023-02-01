@@ -1,16 +1,25 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.core.mail import send_mail
 from rest_framework import generics, status, viewsets, mixins, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.utils import UserUtils
-from users.serializers import SignUpSerializer, CustomUserSerializer, UserProfileSerializer, ChangePasswordSerializer
+from users.serializers import SignUpSerializer, CustomUserSerializer, UserProfileSerializer, ChangePasswordSerializer, PasswordResetSerializer
+from django.conf import settings
+from rest_framework.schemas import AutoSchema
 
+
+User = get_user_model()
 
 class SignUpAPIView(mixins.CreateModelMixin, generics.GenericAPIView):
     """View for handling user signup."""
     serializer_class = SignUpSerializer
     permission_classes = (permissions.AllowAny,)
+    schema = AutoSchema()
 
     def post(self, request):
         """Handle POST request to create a new user."""
@@ -22,6 +31,7 @@ class LoginAPIView(generics.GenericAPIView):
     """View for handling user login."""
     permission_classes = (permissions.AllowAny,)
     serializer_class = CustomUserSerializer
+    schema = AutoSchema()
 
     def post(self, request, *args, **kwargs):
         """Handle POST request to login a user."""
@@ -53,6 +63,7 @@ class UserProfileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, vie
     """ViewSet for handling user profile operations."""
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    schema = AutoSchema()
 
     def get_object(self):
         """Return the current user as the object to be retrieved or updated."""
@@ -64,6 +75,7 @@ class ChangePasswordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """ViewSet for handling password change operations."""
     serializer_class = ChangePasswordSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    schema = AutoSchema()
 
     def get_object(self):
         """Return the current user as the object to be updated."""
@@ -74,6 +86,7 @@ class ChangePasswordViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
 class LogoutAPIView(APIView):
     """View for handling user logout."""
     permission_classes = (permissions.IsAuthenticated,)
+    schema = AutoSchema()
 
     def post(self, request):
         """Handle POST request to logout a user by blacklisting the refresh token."""
@@ -84,3 +97,25 @@ class LogoutAPIView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetView(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny, )
+    serializer_class = PasswordResetSerializer
+    schema = AutoSchema()
+    
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data['email']
+        try:
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            email_body = f"Please use the link below to reset your password:\n{request.build_absolute_uri('/')}api/reset/{uid}/{token}"
+            send_mail('Password reset', email_body, settings.EMAIL_HOST_USER, [email])
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({'error': 'email not found'}, status=status.HTTP_404_NOT_FOUND)

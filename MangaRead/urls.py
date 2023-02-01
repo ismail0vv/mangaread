@@ -19,12 +19,16 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from MangaRead.settings import base
 from MangaRead.yasg import urlpatterns as swagger
+from rest_framework.documentation import include_docs_urls
+import debug_toolbar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(('users.urls', 'users'), namespace='accounts')),
     path('api/v1/catalog/', include('manga.urls')),
-    path('api/v1/auth/', include('gauth.urls'))
+    path('api/v1/auth/', include('gauth.urls')),
+    path('__debug__/', include(debug_toolbar.urls)),
+    path('docs/', include_docs_urls(title='MangoReadAPI'))
 ]
 
 urlpatterns += swagger

@@ -30,6 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 ALLOWED_HOSTS = ['*']
 
+INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition
 
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
+    'debug_toolbar',
     
     'users',
     'manga',
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -135,24 +138,53 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",
     ),
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
     )
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    
+    'formatters': {
+        'main_format': {
+            'format': '{asctime} - {levelname} - {module} - {filename} - {message}',
+            'style': '{',
+        },
+    },
+    
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'main_format',
+        },
+    },
+    
+    'loggers': {
+        'main': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 PAGE_SIZE = 12
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'mangaread@gmail.com'
-EMAIL_HOST_PASSWORD = 'm@ng@.r3ad'
+EMAIL_HOST_USER = 'asylismailov05@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
 EMAIL_PORT = 587
 
 AUTH_USER_MODEL = 'users.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+GOOGLE_OAUTH2_SCOPE = 'openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 
-GOOGLE_CLIENT_ID = config("GOOGLE_CLIENT_ID")
-GOOGLE_SECRET = config("GOOGLE_SECRET")
+GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8001/api/v1/auth/google/callback/'
+GOOGLE_OAUTH2_CLIENT_ID = config("GOOGLE_CLIENT_ID")
+GOOGLE_OAUTH2_SECRET = config("GOOGLE_SECRET")

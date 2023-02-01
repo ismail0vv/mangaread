@@ -9,16 +9,22 @@ from manga.serializers import (
     TypeSerializer, GenreSerializer, MangaSerializer, ReviewSerializer, ReviewCreateSerializer, GlobalSearchSerializer
 )
 from users.permissions import IsAdminOrReadOnly, IsOwnerPermission
-
+import logging
+from rest_framework.compat import coreapi, coreschema
+from rest_framework.schemas import AutoSchema, ManualSchema
+from rest_framework.schemas import coreapi as coreapi_schema
+logger = logging.getLogger('main')
 
 class TypeViewSet(mixins.ListModelMixin,
                   viewsets.GenericViewSet):
     """ViewSet for viewing and editing Type model instances."""
+    logger.info('ahahha')
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    schema = AutoSchema()
 
 
 class GenreViewSet(mixins.ListModelMixin,
@@ -29,6 +35,7 @@ class GenreViewSet(mixins.ListModelMixin,
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    schema = AutoSchema()
 
 
 class MangaViewSet(mixins.ListModelMixin,
@@ -41,6 +48,7 @@ class MangaViewSet(mixins.ListModelMixin,
     filter_backends = (filters.SearchFilter,)
     lookup_field = 'slug'
     search_fields = ('title', 'description')
+    schema = AutoSchema()
 
     def get_queryset(self):
         """Returns a custom queryset based on the request parameters."""
@@ -50,6 +58,7 @@ class MangaViewSet(mixins.ListModelMixin,
 class ReviewOnMangaApiView(generics.ListCreateAPIView):
     """API view for viewing and creating Review model instances for a specific Manga instance."""
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    schema = AutoSchema()
 
     def get_queryset(self):
         """Returns the Review model instances associated with the Manga instance with the provided slug."""
@@ -81,11 +90,13 @@ class ReviewAPIView(mixins.RetrieveModelMixin,
     permission_classes = (IsOwnerPermission,)
     lookup_field = 'id'
     queryset = Review.objects.all()
+    schema = AutoSchema()
 
 
 class GlobalSearchAPIView(views.APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = GlobalSearchSerializer
+    schema = AutoSchema()
 
     def get_queryset(self):
         return None

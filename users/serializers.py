@@ -140,3 +140,7 @@ class SignUpSerializer(CustomUserSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()

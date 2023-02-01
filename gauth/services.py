@@ -20,21 +20,21 @@ def get_google_userinfo():
         {"auth_uri": "https://accounts.google.com/o/oauth2/auth",
          "token_uri":"https://oauth2.googleapis.com/token",
          "client_id": base.GOOGLE_CLIENT_ID,
+         'project_id': "mangoread-375402",
          "client_secret": base.GOOGLE_SECRET}}, scopes=SCOPES)
-    creds = flow.run_local_server(port=0, redirect_uri_trailing_slash=False)
-    print(creds)
-    try:
-        service = build('oauth2', 'v2', credentials=creds)
-        try:
-            user_info =  service.userinfo().get().execute()
-        except HttpError as error:
-            print(f' Ann error occured {error}')
+    return 
+# try:
+#         service = build('oauth2', 'v2', credentials=creds)
+#         try:
+#             user_info =  service.userinfo().get().execute()
+#         except HttpError as error:
+#             print(f' Ann error occured {error}')
         
-        if user_info and user_info.get('id'):
-            print(user_info)
-            return (user_info)
-        else:
-            print('pizdec')
+#         if user_info and user_info.get('id'):
+#             print(user_info)
+#             return (user_info)
+#         else:
+#             print('pizdec')
     
-    except HttpError as error:
-        print(f'An error occurred: {error}')
+#     except HttpError as error:
+#         print(f'An error occurred: {error}')
